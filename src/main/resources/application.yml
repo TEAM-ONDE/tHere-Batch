@@ -8,23 +8,23 @@ spring:
   datasource:
     hikari:
       maximum-pool-size: 20
-    url: jdbc:h2:mem:test
-    username: sa
-    password:
-    driverClassName: org.h2.Driver
-#    url: jdbc:mysql://localhost:3306/there?serverTimezone=Asia/Seoul
-#    username:
+#    url: jdbc:h2:mem:test
+#    username: sa
 #    password:
-#    driverClassName: com.mysql.cj.jdbc.Driver
+#    driverClassName: org.h2.Driver
+    url: jdbc:mysql://localhost:3306/there?serverTimezone=Asia/Seoul
+    username: test
+    password: Q1w2e3r4
+    driverClassName: com.mysql.cj.jdbc.Driver
 
   h2:
     console:
       enabled: true
   jpa:
     defer-datasource-initialization: true
-    database-platform: H2
+    #database-platform: H2
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     open-in-view: false
     properties:
       hibernate:

@@ -1,11 +1,12 @@
 package onde.there_batch.batch;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import onde.there_batch.domain.Place;
+import onde.there_batch.redies.RedisService;
 import onde.there_batch.repository.JourneyRepository;
 import onde.there_batch.repository.PlaceRepository;
-import onde.there_batch.redies.RedisService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -22,7 +23,7 @@ public class batch {
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
 
-	private final RedisService<Long> redisService;
+	private final RedisService<String> redisService;
 
 	private final String JOURNEY_ID = "journeyId";
 
@@ -44,37 +45,39 @@ public class batch {
 	@Bean
 	public Step journeyDeleteStep() {
 		return this.stepBuilderFactory.get("journeyDelete")
-			.<Long, Long>chunk(100)
-			.reader(new CustomItemReaderForRedis<Long>(getItems(JOURNEY_ID)))
+			.<String, Long>chunk(100)
+			//.reader(new CustomItemReaderForRedis<String>(getItems(JOURNEY_ID)))
+			.reader(new CustomItemReaderForRedis<String>(getItems(JOURNEY_ID)))
 			.processor(checkHavePlace())
-			.writer()
+			.writer(new CustomItemWriter().customJourneyItemWriter())
 			.build();
 	}
 
 	@Bean
 	public Step placeDeleteStep() {
 		return this.stepBuilderFactory.get("placeDelete")
-			.chunk(100)
-			.reader(new CustomItemReaderForRedis<>(getItems(PLACE_ID))
-				.writer()
-				.build();
+			.<String, Long>chunk(100)
+			.reader(new CustomItemReaderForRedis<String>(getItems(PLACE_ID)))
+			.writer(new CustomItemWriter().customPlaceItemWriter())
+			.build();
 	}
 
 
-	private List<Long> getItems(String redisKey) {
-		return (List<Long>) redisService.getSetOps(redisKey);
+	private List<String> getItems(String redisKey) {
+		List<String> list = new ArrayList<String>(redisService.getSetOps(redisKey));
+		return new ArrayList<String>(redisService.getSetOps(redisKey));
 	}
 
-	private ItemProcessor<? super Long, ? extends Long> checkHavePlace() {
+	private ItemProcessor<? super String, ? extends Long> checkHavePlace() {
 		return journeyId -> {
-			List<Place> places = placeRepository.findAllByJourneyId(journeyId);
+			List<Place> places = placeRepository.findAllByJourneyId(Long.valueOf(journeyId));
 			if (!places.isEmpty()) {
 				for (Place place : places) {
-					redisService.setSetOps(PLACE_ID, (place.getId()));
+					redisService.setSetOps(PLACE_ID, String.valueOf(place.getId()));
 				}
 			}
 
-			return (Long) journeyId;
+			return Long.parseLong(journeyId);
 		};
 	}
 }

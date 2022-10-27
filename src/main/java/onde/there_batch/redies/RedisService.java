@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RedisService<Long> {
+public class RedisService<T> {
 
-	private final RedisTemplate<String, Long> redisTemplate;
+	private final RedisTemplate<String, T> redisTemplate;
 
-	public final void setSetOps(String key, Long... values) {
+	public final void setSetOps(String key, T... values) {
 		redisTemplate.opsForSet().add(key, values);
 	}
 
-	public Set<Long> getSetOps(String key) {
+	public Set<T> getSetOps(String key) {
 		return redisTemplate.opsForSet().members(key);
 	}
 
