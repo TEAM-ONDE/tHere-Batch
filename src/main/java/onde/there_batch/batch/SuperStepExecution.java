@@ -4,7 +4,8 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ExecutionContext;
 
-public class SuperStepExecution <T> {
+public class SuperStepExecution<T> {
+
 	private StepExecution stepExecution;
 
 	protected void putData(String key, T data) {
@@ -27,11 +28,11 @@ public class SuperStepExecution <T> {
 		return jobContext.get(key);
 	}
 
-	protected void setStepExecution(StepExecution stepExecution) {
-		this.stepExecution = stepExecution;
-	}
-
 	protected StepExecution getStepExecution() {
 		return this.stepExecution;
+	}
+
+	protected void setStepExecution(StepExecution stepExecution) {
+		this.stepExecution = stepExecution;
 	}
 }

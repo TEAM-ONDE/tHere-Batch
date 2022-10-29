@@ -2,7 +2,6 @@ package onde.there_batch.batch.reader;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import onde.there_batch.batch.SuperStepExecution;
 import org.springframework.batch.core.StepExecution;
@@ -24,7 +23,8 @@ public class PlaceItemReader extends SuperStepExecution<Long> implements ItemRea
 
 
 	public PlaceItemReader(List<String> redisPlaceIds) {
-		this.redisPlaceIds = redisPlaceIds.stream().map(Long::parseLong).collect(Collectors.toList());
+		this.redisPlaceIds = redisPlaceIds.stream().map(Long::parseLong)
+			.collect(Collectors.toList());
 	}
 
 	@BeforeStep
@@ -36,9 +36,9 @@ public class PlaceItemReader extends SuperStepExecution<Long> implements ItemRea
 	@Override
 	public Long read()
 		throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		if(!placeIds.isEmpty()){
+		if (!placeIds.isEmpty()) {
 			return placeIds.remove(0);
-		} else if(!redisPlaceIds.isEmpty()){
+		} else if (!redisPlaceIds.isEmpty()) {
 			return redisPlaceIds.remove(0);
 		}
 		return null;

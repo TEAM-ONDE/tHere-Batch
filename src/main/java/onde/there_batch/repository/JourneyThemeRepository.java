@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface JourneyThemeRepository extends JpaRepository<JourneyTheme, Long> {
+
 	void deleteAllByJourneyId(Long journeyId);
 }

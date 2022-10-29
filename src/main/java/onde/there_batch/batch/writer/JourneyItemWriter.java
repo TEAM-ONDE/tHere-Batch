@@ -2,12 +2,10 @@ package onde.there_batch.batch.writer;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onde.there_batch.batch.SuperStepExecution;
 import onde.there_batch.domain.Place;
-import onde.there_batch.redies.RedisService;
 import onde.there_batch.repository.JourneyBookmarkRepository;
 import onde.there_batch.repository.JourneyThemeRepository;
 import onde.there_batch.repository.PlaceRepository;
@@ -29,14 +27,14 @@ public class JourneyItemWriter extends SuperStepExecution<List<Long>> implements
 
 	@Override
 	public void write(List<? extends Long> journeyIds) throws Exception {
-		if(journeyIds.isEmpty()){
+		if (journeyIds.isEmpty()) {
 			log.info("삭제할 여정이 없습니다.");
 			return;
 		}
 		List<Long> placeIds = new ArrayList<>();
 		for (Long journeyId : journeyIds) {
 			List<Place> places = placeRepository.findAllByJourneyId(journeyId);
-			if(places.isEmpty()){
+			if (places.isEmpty()) {
 				log.info("JourneyId : " + journeyId + "에 저장된 장소가 없습니다.");
 				continue;
 			}
@@ -50,6 +48,7 @@ public class JourneyItemWriter extends SuperStepExecution<List<Long>> implements
 		super.putData("key", placeIds);
 
 	}
+
 	@BeforeStep
 	public void saveStepExecution(StepExecution stepExecution) {
 		super.setStepExecution(stepExecution);

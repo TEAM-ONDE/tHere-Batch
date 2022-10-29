@@ -13,8 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import onde.there_batch.domain.Member;
-import onde.there_batch.domain.Place;
 
 @Getter
 @Setter

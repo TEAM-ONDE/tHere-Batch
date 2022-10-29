@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @StepScope
 public class RedisItemReader implements ItemReader<Long> {
+
 	List<Long> list;
 
 	public RedisItemReader(List<String> list) {

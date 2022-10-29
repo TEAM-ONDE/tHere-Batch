@@ -68,6 +68,7 @@ public class Batch {
 	private ItemReader<Long> journeyItemReader(String key) {
 		return new RedisItemReader(getItems(key));
 	}
+
 	private ItemReader<Long> placeItemReader(String key) {
 		return new PlaceItemReader(getItems(key));
 	}

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class PlaceItemWriter implements ItemWriter<Long> {
+
 	private final PlaceRepository placeRepository;
 	private final CommentRepository commentRepository;
 	private final PlaceHeartRepository placeHeartRepository;
@@ -29,7 +30,7 @@ public class PlaceItemWriter implements ItemWriter<Long> {
 
 	@Override
 	public void write(List<? extends Long> placeIds) throws Exception {
-		if(placeIds.isEmpty()){
+		if (placeIds.isEmpty()) {
 			log.info("삭제할 장소가 없습니다.");
 			return;
 		}
@@ -40,7 +41,7 @@ public class PlaceItemWriter implements ItemWriter<Long> {
 			List<PlaceImage> placeImages = placeImageRepository.findAllByPlaceId(placeId);
 			placeImageRepository.deleteAllByPlaceId(placeId);
 			placeRepository.deleteById(placeId);
-			if(placeImages.isEmpty()){
+			if (placeImages.isEmpty()) {
 				log.info("placeId : " + placeId + "에 저장된 사진이 없습니다.");
 				continue;
 			}

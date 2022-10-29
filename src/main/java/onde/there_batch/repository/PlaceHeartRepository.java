@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PlaceHeartRepository extends JpaRepository<PlaceHeart, Long> {
+
 	void deleteAllByPlaceId(Long placeId);
 }
