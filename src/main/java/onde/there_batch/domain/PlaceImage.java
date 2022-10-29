@@ -17,20 +17,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class PlaceImage {
-    @Id
-    @Column(name = "place_image_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "place_id")
-    private Place place;
+	@Id
+	@Column(name = "place_image_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String url;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "place_id")
+	private Place place;
 
-    @Builder
-    public PlaceImage(Place place, String imageUrl) {
-        this.place = place;
-        this.url = imageUrl;
-    }
+	private String url;
+
+	@Builder
+	public PlaceImage(Place place, String imageUrl) {
+		this.place = place;
+		this.url = imageUrl;
+	}
 }

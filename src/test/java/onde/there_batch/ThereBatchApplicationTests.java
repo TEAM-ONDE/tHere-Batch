@@ -11,12 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class ThereBatchApplicationTests {
+
 	@Autowired
 	private JourneyRepository journeyRepository;
 	@Autowired
 	private PlaceRepository placeRepository;
 	@Autowired
 	private RedisService<String> redisService;
+
 	@Test
 	void aa() {
 		for (int i = 0; i < 100; i++) {

@@ -1,6 +1,5 @@
 package onde.there_batch.domain.type;
 
-import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -21,11 +20,4 @@ public enum JourneyThemeType {
 
 	private final String themeName;
 
-//	public static JourneyThemeType findByTheme(String input) {
-//		return Arrays.stream(JourneyThemeType.values())
-//			.filter(type -> type.getThemeName().equals(input))
-//			.findAny()
-//			.orElseThrow(() -> new JourneyException(
-//				JourneyErrorCode.THERE_IS_NO_MATCHING_THEME));
-//	}
 }
