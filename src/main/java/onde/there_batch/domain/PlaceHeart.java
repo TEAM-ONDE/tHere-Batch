@@ -23,16 +23,16 @@ import lombok.ToString;
 @Entity
 public class PlaceHeart {
 
-    @Id
-    @Column(name = "place_heart_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@Column(name = "place_heart_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "place_id")
-    private Place place;
+	@ManyToOne
+	@JoinColumn(name = "place_id")
+	private Place place;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+	@ManyToOne
+	@JoinColumn(name = "member_id")
+	private Member member;
 }

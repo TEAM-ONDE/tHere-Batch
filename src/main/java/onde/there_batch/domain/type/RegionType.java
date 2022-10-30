@@ -1,6 +1,5 @@
 package onde.there_batch.domain.type;
 
-import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +29,4 @@ public enum RegionType {
 
 	private String regionName;
 
-//	public static RegionType findByRegion(String input) {
-//		return Arrays.stream(RegionType.values())
-//			.filter(type -> type.getRegionName().equals(input))
-//			.findAny()
-//			.orElseThrow(() -> new JourneyException(
-//				JourneyErrorCode.NO_REGION_MATCHES));
-//	}
 }

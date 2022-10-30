@@ -1,6 +1,5 @@
 package onde.there_batch.domain;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,37 +8,35 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Entity
+public class JourneyBookmark {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "comment_id", nullable = false)
+	@Column(name = "journeybookmark_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", nullable = false)
+	@JoinColumn(name = "member_id")
 	private Member member;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "place_id", nullable = false)
-	private Place place;
-	private String comment;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "journey_id")
+	private Journey journey;
 
 	@Builder
-	public Comment(Member member, Place place, String comment) {
+	public JourneyBookmark(Member member, Journey journey) {
 		this.member = member;
-		this.place = place;
-		this.comment = comment;
+		this.journey = journey;
 	}
 
-	public void updateComment(String comment) {
-		this.comment = comment;
-	}
 }

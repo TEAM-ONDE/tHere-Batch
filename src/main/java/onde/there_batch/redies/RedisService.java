@@ -1,26 +1,26 @@
 package onde.there_batch.redies;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RedisService<Long> {
+public class RedisService<T> {
 
-	private final RedisTemplate<String, Long> redisTemplate;
+	private final RedisTemplate<String, T> redisTemplate;
 
-	public final void setSetOps(String key, Long... values) {
+	public final void setSetOps(String key, T... values) {
 		redisTemplate.opsForSet().add(key, values);
+
 	}
 
-	public Set<Long> getSetOps(String key) {
-		return redisTemplate.opsForSet().members(key);
+	public List<T> getListOps(String key) {
+		return new ArrayList<T>(
+			Objects.requireNonNull(redisTemplate.opsForSet().members(key)));
 	}
 
 	public boolean delete(String key) {
