@@ -30,7 +30,7 @@ public class PlaceItemReader extends SuperStepExecution<Long> implements ItemRea
 	@BeforeStep
 	public void retrieveInterstepData(StepExecution stepExecution) {
 		super.setStepExecution(stepExecution);
-		this.placeIds = (List<Long>) super.getData("key");
+		this.placeIds = (List<Long>) super.getData("placeId");
 	}
 
 	@Override

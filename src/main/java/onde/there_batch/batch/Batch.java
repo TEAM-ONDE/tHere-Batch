@@ -30,11 +30,40 @@ public class Batch {
 	private final PlaceItemWriter placeItemWriter;
 
 	@Bean
-	public Job delete_job() {
-		return this.jobBuilderFactory.get("delete_job")
+	public Job journeyDeleteJob() {
+		return this.jobBuilderFactory.get("JourneyDeleteJob")
 			.incrementer(new RunIdIncrementer())
-			.start(journeyDeleteStep())
+			.start(journeyThemeAndBookmarkDeleteStep())
 			.next(placeDeleteStep())
+			.next(journeyDeleteStep())
+			.build();
+	}
+
+	@Bean
+	public Job placeDeleteJob() {
+		return this.jobBuilderFactory.get("PlaceDeleteJob")
+			.incrementer(new RunIdIncrementer())
+			.start(placeDeleteStep())
+			.build();
+	}
+
+	@Bean
+	public Step journeyThemeAndBookmarkDeleteStep() {
+		return this.stepBuilderFactory.get("journeyThemeAndRegionDeleteStep")
+			.<Long, Long>chunk(100)
+			.reader(journeyItemReader(JOURNEY_ID))
+			.writer(journeyItemWriter)
+			.listener(promotionListener())
+			.build();
+	}
+
+	@Bean
+	public Step placeDeleteStep() {
+		return this.stepBuilderFactory.get("placeDelete")
+			.<Long, Long>chunk(100)
+			.reader(placeItemReader(""))
+			.writer(placeItemWriter)
+			.listener(promotionListener())
 			.build();
 	}
 
@@ -48,8 +77,10 @@ public class Batch {
 			.build();
 	}
 
+
+
 	@Bean
-	public Step placeDeleteStep() {
+	public Step placeGetFromRedisDeleteStep() {
 		return this.stepBuilderFactory.get("placeDelete")
 			.<Long, Long>chunk(100)
 			.reader(placeItemReader(PLACE_ID))
@@ -61,7 +92,7 @@ public class Batch {
 	@Bean
 	public ExecutionContextPromotionListener promotionListener() {
 		ExecutionContextPromotionListener listener = new ExecutionContextPromotionListener();
-		listener.setKeys(new String[]{"key"});
+		listener.setKeys(new String[]{"placeId", "journeyId"});
 		return listener;
 	}
 
