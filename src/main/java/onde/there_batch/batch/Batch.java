@@ -2,9 +2,11 @@ package onde.there_batch.batch;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import onde.there_batch.batch.reader.JourneyItemReader;
 import onde.there_batch.batch.reader.PlaceItemReader;
 import onde.there_batch.batch.reader.RedisItemReader;
 import onde.there_batch.batch.writer.JourneyItemWriter;
+import onde.there_batch.batch.writer.JourneyThemeAndBookmarkWriter;
 import onde.there_batch.batch.writer.PlaceItemWriter;
 import onde.there_batch.redies.RedisService;
 import org.springframework.batch.core.Job;
@@ -28,6 +30,7 @@ public class Batch {
 	private final RedisService<String> redisService;
 	private final JourneyItemWriter journeyItemWriter;
 	private final PlaceItemWriter placeItemWriter;
+	private final JourneyThemeAndBookmarkWriter journeyThemeAndBookmarkWriter;
 
 	@Bean
 	public Job journeyDeleteJob() {
@@ -43,7 +46,7 @@ public class Batch {
 	public Job placeDeleteJob() {
 		return this.jobBuilderFactory.get("PlaceDeleteJob")
 			.incrementer(new RunIdIncrementer())
-			.start(placeDeleteStep())
+			.start(placeJobDeleteStep())
 			.build();
 	}
 
@@ -52,7 +55,7 @@ public class Batch {
 		return this.stepBuilderFactory.get("journeyThemeAndRegionDeleteStep")
 			.<Long, Long>chunk(100)
 			.reader(journeyItemReader(JOURNEY_ID))
-			.writer(journeyItemWriter)
+			.writer(journeyThemeAndBookmarkWriter)
 			.listener(promotionListener())
 			.build();
 	}
@@ -71,19 +74,17 @@ public class Batch {
 	public Step journeyDeleteStep() {
 		return this.stepBuilderFactory.get("journeyDelete")
 			.<Long, Long>chunk(100)
-			.reader(journeyItemReader(JOURNEY_ID))
+			.reader(deleteJourneyItemReader())
 			.writer(journeyItemWriter)
 			.listener(promotionListener())
 			.build();
 	}
 
-
-
 	@Bean
-	public Step placeGetFromRedisDeleteStep() {
+	public Step placeJobDeleteStep() {
 		return this.stepBuilderFactory.get("placeDelete")
 			.<Long, Long>chunk(100)
-			.reader(placeItemReader(PLACE_ID))
+			.reader(placeItemReader("placeId"))
 			.writer(placeItemWriter)
 			.listener(promotionListener())
 			.build();
@@ -98,6 +99,10 @@ public class Batch {
 
 	private ItemReader<Long> journeyItemReader(String key) {
 		return new RedisItemReader(getItems(key));
+	}
+
+	private ItemReader<Long> deleteJourneyItemReader() {
+		return new JourneyItemReader();
 	}
 
 	private ItemReader<Long> placeItemReader(String key) {
