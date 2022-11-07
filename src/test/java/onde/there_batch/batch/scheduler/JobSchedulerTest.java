@@ -1,14 +1,14 @@
-package onde.there_batch;
+package onde.there_batch.batch.scheduler;
 
-import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import onde.there_batch.batch.JourneyDeleteJobConfig;
+import onde.there_batch.batch.PlaceDeleteJobConfig;
 import onde.there_batch.domain.Journey;
 import onde.there_batch.domain.JourneyTheme;
-import onde.there_batch.domain.Member;
 import onde.there_batch.domain.Place;
 import onde.there_batch.domain.PlaceHeart;
-import onde.there_batch.domain.type.JourneyThemeType;
-import onde.there_batch.domain.type.PlaceCategoryType;
-import onde.there_batch.domain.type.RegionType;
 import onde.there_batch.redies.RedisService;
 import onde.there_batch.repository.CommentRepository;
 import onde.there_batch.repository.JourneyBookmarkRepository;
@@ -18,17 +18,30 @@ import onde.there_batch.repository.MemberRepository;
 import onde.there_batch.repository.PlaceHeartRepository;
 import onde.there_batch.repository.PlaceImageRepository;
 import onde.there_batch.repository.PlaceRepository;
-import org.joda.time.DateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+@Slf4j
 @SpringBootTest
-class ThereBatchApplicationTests {
+class JobSchedulerTest {
+
+	@Autowired
+	private JobLauncher jobLauncher;
+	@Autowired
+	private JourneyDeleteJobConfig journeyDeleteJobConfig;
+	@Autowired
+	private PlaceDeleteJobConfig placeDeleteJobConfig;
 
 	@Autowired
 	private MemberRepository memberRepository;
-
 	@Autowired
 	private JourneyRepository journeyRepository;
 	@Autowired
@@ -44,16 +57,17 @@ class ThereBatchApplicationTests {
 	@Autowired
 	private PlaceImageRepository placeImageRepository;
 
-
 	@Autowired
 	private RedisService<String> redisService;
 
-	@Test
-	void aa() {
+	@BeforeEach
+	public void setup() {
+		log.info("setup==========================================");
 		for (int i = 0; i < 100; i++) {
 			Journey journey = journeyRepository.save(new Journey());
 			redisService.setListOps("journeyId", String.valueOf(journey.getId()));
-			JourneyTheme journeyTheme = journeyThemeRepository.save(JourneyTheme.builder().journey(journey).build());
+			JourneyTheme journeyTheme = journeyThemeRepository.save(
+				JourneyTheme.builder().journey(journey).build());
 			Place place = placeRepository.save(Place.builder().journey(journey).build());
 			Place place2 = placeRepository.save(Place.builder().journey(journey).build());
 			PlaceHeart placeHeart = placeHeartRepository.save(
@@ -70,48 +84,20 @@ class ThereBatchApplicationTests {
 	}
 
 	@Test
-	void 생성() {
-		//given
-		Member member = memberRepository.save(Member.builder()
-				.id("ooliskoo@naver.com")
-				.email("ooliskoo@naver.com")
-				.password("1234")
-				.name("김이안")
-				.nickName("ian")
-				.profileImageUrl("any url")
-			.build());
-		Journey journey = journeyRepository.save(Journey.builder()
-				.member(member)
-				.title("journey title")
-				.startDate(LocalDate.now())
-				.endDate(LocalDate.now())
-				.journeyThumbnailUrl("any url")
-				.disclosure("disclosure")
-				.introductionText("journey text")
-				.numberOfPeople(2)
-				.region(RegionType.BUSAN)
-			.build());
-		JourneyTheme journeyTheme = journeyThemeRepository.save(JourneyTheme.builder()
-				.journey(journey)
-				.journeyThemeName(JourneyThemeType.CITY)
-			.build());
-		Place place = placeRepository.save(Place.builder()
-				.latitude(123.0)
-				.longitude(32.0)
-				.title("place title")
-				.text("place text")
-				.addressName("address")
-				.placeCategory(PlaceCategoryType.ACCOMMODATION)
-				.journey(journey)
-				.placeHeartCount(2L)
-			.build());
-		PlaceHeart placeHeart = placeHeartRepository.save(PlaceHeart.builder()
-				.place(place)
-				.member(member)
-			.build());
-        //when
-		//when
+	void runJob() throws InterruptedException {
+		Map<String, JobParameter> confMap = new HashMap<>();
+		confMap.put("time", new JobParameter(System.currentTimeMillis()));
+		JobParameters jobParameters = new JobParameters(confMap);
 
-		//then
+		try {
+
+			jobLauncher.run(journeyDeleteJobConfig.journeyDeleteJob(), jobParameters);
+			jobLauncher.run(placeDeleteJobConfig.placeDeleteJob(), jobParameters);
+
+		} catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
+			| JobParametersInvalidException | org.springframework.batch.core.repository.JobRestartException e) {
+
+			log.error(e.getMessage());
+		}
 	}
 }

@@ -34,6 +34,7 @@ public class PlaceItemWriter implements ItemWriter<Long> {
 			log.info("삭제할 장소가 없습니다.");
 			return;
 		}
+		log.info("PlaceItemWriter 시작 사이즈 : " + placeIds.size());
 		for (Long placeId : placeIds) {
 			commentRepository.deleteAllByPlaceId(placeId);
 			placeHeartRepository.deleteAllByPlaceId(placeId);
@@ -48,7 +49,7 @@ public class PlaceItemWriter implements ItemWriter<Long> {
 			for (PlaceImage placeImage : placeImages) {
 				awsS3Service.deleteFile(placeImage.getUrl());
 			}
-			log.info("placeId : " + placeId + "의 댓글, 좋아요, 이미지 삭제 완료");
 		}
+		log.info("장소, 댓글, 좋아요, 이미지 삭제 완료");
 	}
 }

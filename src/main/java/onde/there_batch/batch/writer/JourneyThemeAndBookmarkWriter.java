@@ -32,6 +32,7 @@ public class JourneyThemeAndBookmarkWriter extends SuperStepExecution<List<Long>
 			log.info("삭제할 여정이 없습니다.");
 			return;
 		}
+		log.info("JourneyThemeAndBookmarkWriter 시작 사이즈 : " + journeyIds.size());
 		List<Long> journeyList = new ArrayList<>();
 		List<Long> placeList = new ArrayList<>();
 		for (Long journeyId : journeyIds) {
@@ -46,8 +47,8 @@ public class JourneyThemeAndBookmarkWriter extends SuperStepExecution<List<Long>
 			}
 			journeyBookmarkRepository.deleteAllByJourneyId(journeyId);
 			journeyThemeRepository.deleteAllByJourneyId(journeyId);
-			log.info("JourneyId : " + journeyId + "의 테마, 찜(북마크) 삭제 완료");
 		}
+		log.info("JourneyThemeAndBookmarkWriter -> 테마, 북마크 삭제 완료");
 		super.putData("journeyId", journeyList);
 		super.putData("placeId", placeList);
 	}

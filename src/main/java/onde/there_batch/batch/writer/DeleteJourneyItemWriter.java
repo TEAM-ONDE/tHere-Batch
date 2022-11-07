@@ -22,6 +22,7 @@ public class DeleteJourneyItemWriter extends SuperStepExecution<List<Long>> impl
 
 	@Override
 	public void write(List<? extends Long> journeyIds) throws Exception {
+		log.info("DeleteJourneyItemWriter 시작 사이즈 : " + journeyIds.size());
 		if (journeyIds.isEmpty()) {
 			log.info("삭제할 여정이 없습니다.");
 			return;
@@ -29,6 +30,7 @@ public class DeleteJourneyItemWriter extends SuperStepExecution<List<Long>> impl
 		for (Long journeyId : journeyIds) {
 			journeyRepository.deleteById(journeyId);
 		}
+		log.info("여정 삭제 완료!!!");
 	}
 
 	@BeforeStep
