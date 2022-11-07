@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import onde.there_batch.batch.reader.JourneyItemReader;
 import onde.there_batch.batch.reader.PlaceItemReader;
 import onde.there_batch.batch.reader.RedisItemReader;
+import onde.there_batch.batch.writer.DeleteJourneyItemWriter;
 import onde.there_batch.batch.writer.JourneyItemWriter;
 import onde.there_batch.batch.writer.JourneyThemeAndBookmarkWriter;
 import onde.there_batch.batch.writer.PlaceItemWriter;
@@ -25,10 +26,11 @@ public class Batch {
 
 	private final String JOURNEY_ID = "journeyId";
 	private final String PLACE_ID = "placeId";
+	private final long REDIS_GET_SIZE = 100L;
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
 	private final RedisService<String> redisService;
-	private final JourneyItemWriter journeyItemWriter;
+	private final DeleteJourneyItemWriter journeyItemWriter;
 	private final PlaceItemWriter placeItemWriter;
 	private final JourneyThemeAndBookmarkWriter journeyThemeAndBookmarkWriter;
 
@@ -84,7 +86,7 @@ public class Batch {
 	public Step placeJobDeleteStep() {
 		return this.stepBuilderFactory.get("placeDelete")
 			.<Long, Long>chunk(100)
-			.reader(placeItemReader("placeId"))
+			.reader(placeItemReader(PLACE_ID))
 			.writer(placeItemWriter)
 			.listener(promotionListener())
 			.build();
@@ -98,7 +100,7 @@ public class Batch {
 	}
 
 	private ItemReader<Long> journeyItemReader(String key) {
-		return new RedisItemReader(getItems(key));
+		return new RedisItemReader(getItems(key, REDIS_GET_SIZE));
 	}
 
 	private ItemReader<Long> deleteJourneyItemReader() {
@@ -106,10 +108,10 @@ public class Batch {
 	}
 
 	private ItemReader<Long> placeItemReader(String key) {
-		return new PlaceItemReader(getItems(key));
+		return new PlaceItemReader(getItems(key, REDIS_GET_SIZE));
 	}
 
-	private List<String> getItems(String redisKey) {
-		return redisService.getListOps(redisKey);
+	private List<String> getItems(String redisKey, long count) {
+		return redisService.getListOps(redisKey, count);
 	}
 }

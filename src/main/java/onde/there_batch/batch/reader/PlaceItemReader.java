@@ -36,9 +36,9 @@ public class PlaceItemReader extends SuperStepExecution<Long> implements ItemRea
 	@Override
 	public Long read()
 		throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		if (!placeIds.isEmpty()) {
+		if (placeIds != null && !placeIds.isEmpty()) {
 			return placeIds.remove(0);
-		} else if (!redisPlaceIds.isEmpty()) {
+		} else if (redisPlaceIds != null && !redisPlaceIds.isEmpty()) {
 			return redisPlaceIds.remove(0);
 		}
 		return null;

@@ -19,6 +19,7 @@ public class DeleteJourneyItemWriter extends SuperStepExecution<List<Long>> impl
 	ItemWriter<Long> {
 
 	private final JourneyRepository journeyRepository;
+
 	@Override
 	public void write(List<? extends Long> journeyIds) throws Exception {
 		if (journeyIds.isEmpty()) {

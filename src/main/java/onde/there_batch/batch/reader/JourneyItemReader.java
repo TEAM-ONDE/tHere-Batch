@@ -22,7 +22,7 @@ public class JourneyItemReader extends SuperStepExecution<Long> implements ItemR
 	@Override
 	public Long read()
 		throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		if (!journeyIds.isEmpty()) {
+		if (journeyIds != null && !journeyIds.isEmpty()) {
 			return journeyIds.remove(0);
 		}
 		return null;
