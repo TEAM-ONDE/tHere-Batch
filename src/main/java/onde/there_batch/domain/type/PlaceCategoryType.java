@@ -1,7 +1,10 @@
 package onde.there_batch.domain.type;
 
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import onde.there_batch.exception.place.PlaceErrorCode;
+import onde.there_batch.exception.place.PlaceException;
 
 @Getter
 @RequiredArgsConstructor
@@ -23,4 +26,9 @@ public enum PlaceCategoryType {
 	;
 	private final String description;
 
+	public static PlaceCategoryType toPlaceCategoryType(String s) {
+		return Arrays.stream(PlaceCategoryType.values())
+			.filter(x -> s.equals(x.getDescription())).findFirst()
+			.orElseThrow(() -> new PlaceException(PlaceErrorCode.MISMATCH_PLACE_CATEGORY_TYPE));
+	}
 }

@@ -1,7 +1,6 @@
 package onde.there_batch.batch.reader;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import onde.there_batch.batch.SuperStepExecution;
 import org.springframework.batch.core.StepExecution;
@@ -16,31 +15,22 @@ import org.springframework.stereotype.Component;
 @Component
 @StepScope
 @Slf4j
-public class PlaceItemReader extends SuperStepExecution<Long> implements ItemReader<Long> {
+public class JourneyItemReader extends SuperStepExecution<Long> implements ItemReader<Long> {
 
-	private List<Long> placeIds;
-	private List<Long> redisPlaceIds;
+	private List<Long> journeyIds;
 
-
-	public PlaceItemReader(List<String> redisPlaceIds) {
-		this.redisPlaceIds = redisPlaceIds.stream().map(Long::parseLong)
-			.collect(Collectors.toList());
+	@Override
+	public Long read()
+		throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+		if (journeyIds != null && !journeyIds.isEmpty()) {
+			return journeyIds.remove(0);
+		}
+		return null;
 	}
 
 	@BeforeStep
 	public void retrieveInterstepData(StepExecution stepExecution) {
 		super.setStepExecution(stepExecution);
-		this.placeIds = (List<Long>) super.getData("placeId");
-	}
-
-	@Override
-	public Long read()
-		throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		if (placeIds != null && !placeIds.isEmpty()) {
-			return placeIds.remove(0);
-		} else if (redisPlaceIds != null && !redisPlaceIds.isEmpty()) {
-			return redisPlaceIds.remove(0);
-		}
-		return null;
+		this.journeyIds = (List<Long>) super.getData("journeyId");
 	}
 }

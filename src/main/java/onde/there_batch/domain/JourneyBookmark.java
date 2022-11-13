@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,16 +15,16 @@ import lombok.NoArgsConstructor;
 
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity(name = "journey_bookmark")
 public class JourneyBookmark {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "journeybookmark_id")
+	@Column(name = "journey_bookmark_id")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
 
