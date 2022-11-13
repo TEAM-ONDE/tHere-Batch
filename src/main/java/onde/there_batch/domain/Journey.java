@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import onde.there_batch.domain.type.RegionType;
+import org.hibernate.annotations.BatchSize;
 
 @Entity(name = "journey")
 @Getter
@@ -63,6 +64,9 @@ public class Journey {
 	private RegionType region;
 
 	@OneToMany(mappedBy = "journey")
+	@BatchSize(size = 10)
 	private List<JourneyTheme> journeyThemes = new ArrayList<>();
 
+	@Column(name = "deleted")
+	private boolean deleted;
 }
