@@ -12,10 +12,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@ToString
 public class PlaceImage {
 
 	@Id
@@ -25,6 +29,7 @@ public class PlaceImage {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "place_id")
+	@ToString.Exclude
 	private Place place;
 
 	private String url;
