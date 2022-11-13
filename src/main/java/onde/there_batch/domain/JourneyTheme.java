@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,17 +25,17 @@ import onde.there_batch.domain.type.JourneyThemeType;
 @Builder
 public class JourneyTheme {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "journey_theme_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "journey_theme_id")
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "journey_id")
-    private Journey journey;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "journey_id")
+	private Journey journey;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "journey_theme_name")
-    private JourneyThemeType journeyThemeName;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "journey_theme_name")
+	private JourneyThemeType journeyThemeName;
 
 }

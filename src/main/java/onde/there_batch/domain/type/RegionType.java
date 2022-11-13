@@ -4,6 +4,8 @@ import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import onde.there_batch.exception.journey.JourneyErrorCode;
+import onde.there_batch.exception.journey.JourneyException;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -30,11 +32,11 @@ public enum RegionType {
 
 	private String regionName;
 
-//	public static RegionType findByRegion(String input) {
-//		return Arrays.stream(RegionType.values())
-//			.filter(type -> type.getRegionName().equals(input))
-//			.findAny()
-//			.orElseThrow(() -> new JourneyException(
-//				JourneyErrorCode.NO_REGION_MATCHES));
-//	}
+	public static RegionType findByRegion(String input) {
+		return Arrays.stream(RegionType.values())
+			.filter(type -> type.getRegionName().equals(input))
+			.findAny()
+			.orElseThrow(() -> new JourneyException(
+				JourneyErrorCode.NO_REGION_MATCHES));
+	}
 }

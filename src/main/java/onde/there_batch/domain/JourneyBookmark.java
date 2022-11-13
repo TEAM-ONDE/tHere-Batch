@@ -7,31 +7,35 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
-public class PlaceImage {
+@Entity(name = "journey_bookmark")
+public class JourneyBookmark {
 
 	@Id
-	@Column(name = "place_image_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "journey_bookmark_id")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "place_id")
-	private Place place;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
 
-	private String url;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "journey_id")
+	private Journey journey;
 
 	@Builder
-	public PlaceImage(Place place, String imageUrl) {
-		this.place = place;
-		this.url = imageUrl;
+	public JourneyBookmark(Member member, Journey journey) {
+		this.member = member;
+		this.journey = journey;
 	}
+
 }

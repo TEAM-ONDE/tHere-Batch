@@ -60,5 +60,4 @@ public class Place {
 
 	private long placeHeartCount;
 
-	boolean isDeleted;
 }
