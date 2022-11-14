@@ -1,4 +1,5 @@
 awsS3.yml
+db-connection.yml
 
 HELP.md
 .gradle
