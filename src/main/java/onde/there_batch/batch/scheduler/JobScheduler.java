@@ -28,7 +28,7 @@ public class JobScheduler {
 	@Autowired
 	private PlaceDeleteJobConfig placeDeleteJobConfig;
 
-	@Scheduled(cron = "0 * * * * *")
+	@Scheduled(cron = "0 0 2 * * *")
 	public void runJob() {
 
 		Map<String, JobParameter> confMap = new HashMap<>();
